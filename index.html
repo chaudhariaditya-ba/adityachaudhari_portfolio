@@ -590,10 +590,51 @@
   .hero-left > *:nth-child(5) { animation-delay: 0.45s; }
   .hero-left > *:nth-child(6) { animation-delay: 0.55s; }
 
+  /* ── HAMBURGER ── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer;
+    padding: 4px; z-index: 200;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--ink); border-radius: 2px;
+    transition: transform 0.25s, opacity 0.2s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed; inset: 0; z-index: 150;
+    background: rgba(248,247,244,0.98);
+    backdrop-filter: blur(12px);
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 2.5rem;
+  }
+  .mobile-menu.open { display: flex; animation: fadeIn 0.2s ease; }
+  .mobile-menu a {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem; color: var(--ink);
+    text-decoration: none; letter-spacing: -0.01em;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--accent-bright); }
+  .mobile-menu .mobile-cta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    background: var(--accent); color: #fff !important;
+    padding: 0.75rem 2.5rem; border-radius: 3px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
     #hero { grid-template-columns: 1fr; }
     .hero-right { display: none; }
     .hero-left { padding: 8rem 2rem 4rem; }
@@ -601,9 +642,17 @@
     .toolkit-grid { grid-template-columns: 1fr 1fr; }
     .process-steps { grid-template-columns: 1fr 1fr; gap: 2rem; }
     .process-steps::before { display: none; }
-    .contact-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
     .container { padding: 0 1.5rem; }
     section { padding: 4rem 0; }
+    .modal-kpi-row { grid-template-columns: 1fr 1fr; }
+    .modal-process-grid { grid-template-columns: 1fr; }
+    .case-two-col { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 540px) {
+    .toolkit-grid { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr; }
+    h1 { font-size: 2rem; }
   }
 </style>
 </head>
@@ -613,12 +662,25 @@
 <nav>
   <div class="nav-logo">Aditya <span>Chaudhari</span></div>
   <ul class="nav-links">
-    <li><a href="#cases">Case Studies</a></li>
+    <li><a href="#cases">Experience</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
     <li><a href="#toolkit">Toolkit</a></li>
     <li><a href="#process">Process</a></li>
     <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
   </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#cases" onclick="closeMobileMenu()">Experience</a>
+  <a href="#portfolio" onclick="closeMobileMenu()">Portfolio</a>
+  <a href="#toolkit" onclick="closeMobileMenu()">Toolkit</a>
+  <a href="#process" onclick="closeMobileMenu()">Process</a>
+  <a href="#contact" class="mobile-cta" onclick="closeMobileMenu()">Get in Touch</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -639,7 +701,7 @@
       <span class="badge">ECBA Candidate</span>
     </div>
     <div class="hero-actions">
-      <a href="#cases" class="btn-primary">View Case Studies ↓</a>
+      <a href="#cases" class="btn-primary">View Experience ↓</a>
       <a href="#contact" class="btn-outline">Let's Connect</a>
     </div>
   </div>
@@ -683,12 +745,12 @@
   </div>
 </section>
 
-<!-- CASE STUDIES -->
+<!-- WORK EXPERIENCE CASES -->
 <section id="cases">
   <div class="container">
-    <div class="section-label">Impact Case Studies</div>
-    <h2>Real Problems. Measurable Results.</h2>
-    <p class="section-intro">Each engagement follows a structured BA methodology — from discovery and root cause analysis through to solution design and measurable outcome validation.</p>
+    <div class="section-label">Professional Experience</div>
+    <h2>Work Engagements</h2>
+    <p class="section-intro">Delivered across three industries — retail operations, SaaS product analytics, and real estate — each engagement followed a structured BA methodology from discovery through to measurable outcome validation.</p>
 
     <div class="cases-grid">
 
@@ -735,31 +797,50 @@
       </div>
 
       <!-- Case 3 -->
-      <div class="case-card">
+      <div class="case-card case-card-wide">
         <div class="case-card-stripe green"></div>
         <div class="case-card-body">
           <div class="case-client">Cushman & Wakefield · India · Real Estate</div>
           <div class="case-title">Financial Reporting Process Automation</div>
-          <div class="case-section">
-            <div class="case-section-label">Problem Statement</div>
-            <p>Monthly financial reporting was entirely manual, error-prone, and inconsistent — consuming significant analyst time while producing outputs that stakeholders could not fully trust.</p>
-          </div>
-          <div class="case-section">
-            <div class="case-section-label">Solution Approach</div>
-            <p>Mapped existing financial reporting processes, identified recurring error sources via gap analysis, and built Excel dashboards with Pivot Tables and macros to automate key manual steps and standardise data delivery.</p>
-          </div>
-          <div class="case-roi">
-            <div class="case-roi-value">15%</div>
-            <div class="case-roi-desc">Reduction in reporting effort · 10% decrease in reporting errors · Consistent, trustworthy monthly outputs</div>
+          <div class="case-two-col">
+            <div>
+              <div class="case-section">
+                <div class="case-section-label">Problem Statement</div>
+                <p>Monthly financial reporting was entirely manual, error-prone, and inconsistent — consuming significant analyst time while producing outputs that stakeholders could not fully trust.</p>
+              </div>
+              <div class="case-section">
+                <div class="case-section-label">Solution Approach</div>
+                <p>Mapped existing financial reporting processes, identified recurring error sources via gap analysis, and built Excel dashboards with Pivot Tables and macros to automate key manual steps and standardise data delivery.</p>
+              </div>
+            </div>
+            <div>
+              <div class="case-roi" style="margin-top:0;">
+                <div class="case-roi-value">15%</div>
+                <div class="case-roi-desc">Reduction in reporting effort · 10% decrease in reporting errors · Consistent, trustworthy monthly outputs</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SELF-INITIATED PROJECTS -->
+<section id="portfolio" style="background: var(--paper-warm);">
+  <div class="container">
+    <div class="section-label">Portfolio Projects</div>
+    <h2>Self-Initiated Case Studies</h2>
+    <p class="section-intro">Independent BA projects designed to demonstrate end-to-end methodology — from problem scoping and stakeholder mapping through to BRD documentation, data modelling, and outcome measurement.</p>
+
+    <div class="cases-grid">
 
       <!-- Case 4 — Telco Churn -->
       <div class="case-card">
         <div class="case-card-stripe" style="background: linear-gradient(90deg, #7c3aed, #a855f7);"></div>
         <div class="case-card-body">
-          <div class="case-client">Self-Initiated Portfolio Project · 2025</div>
+          <div class="case-client">Self-Initiated · 2025 · Telecom / Data Analytics</div>
           <div class="case-title">Predictive Customer Retention — Telco Churn</div>
           <div class="case-section">
             <div class="case-section-label">Problem Statement</div>
@@ -776,13 +857,49 @@
         </div>
       </div>
 
+      <!-- Case 6 — F1 Fan Growth (full width) -->
+      <div class="case-card case-card-wide" onclick="openF1Modal()" style="cursor:pointer;">
+        <div class="case-card-stripe" style="background: linear-gradient(90deg, #e10600, #ff4444);"></div>
+        <div class="case-card-body">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <div class="case-client">Self-Initiated · March 2026 · Sports / Product BA</div>
+              <div class="case-title">Formula 1: Fan Engagement Initiative</div>
+            </div>
+            <div class="case-expand-badge" style="border-color:#e10600; color:#e10600;">Full Case Study ↗</div>
+          </div>
+          <div class="case-two-col">
+            <div>
+              <div class="case-section">
+                <div class="case-section-label">Problem Statement</div>
+                <p>F1's viewership crossed 1.5 billion in 2023, but a large segment of new fans — many from the Drive to Survive wave — watch fewer than four races a year and never convert to commercially valuable engagement. The F1 app offered no onboarding, no personalisation, and nothing to do between race weekends.</p>
+              </div>
+              <div class="case-section">
+                <div class="case-section-label">Solution Approach</div>
+                <p>Scoped the Fan Engagement Initiative (FEI) end-to-end: stakeholder register mapping 8 roles across digital, commercial, legal, and broadcast. As-Is / To-Be process analysis across the full casual fan journey. Authored 8 functional requirements with MoSCoW prioritisation and a full risk register.</p>
+              </div>
+            </div>
+            <div>
+              <div class="case-section">
+                <div class="case-section-label">BA Artifacts Produced</div>
+                <p>Business Problem Statement · Stakeholder Register · As-Is / To-Be Process Maps · BRD with 8 Functional Requirements · MoSCoW Prioritisation · KPI Framework (Primary + Secondary) · Assumptions, Dependencies & Risk Register</p>
+              </div>
+              <div class="case-roi" style="background: #fff0f0; border-color: #e10600;">
+                <div class="case-roi-value" style="color: #e10600;">+40%</div>
+                <div class="case-roi-desc" style="color: #c0392b;">Target MAU session growth · +25% casual-to-engaged conversion · Full BRD suite delivered</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Case 5 — Spotify (full width) -->
       <div class="case-card case-card-wide" onclick="openModal()" style="cursor:pointer;">
         <div class="case-card-stripe" style="background: linear-gradient(90deg, #1db954, #158a3e);"></div>
         <div class="case-card-body">
           <div style="display:flex; justify-content:space-between; align-items:flex-start;">
             <div>
-              <div class="case-client">Self-Initiated Portfolio Project · March 2026 · SaaS / Product</div>
+              <div class="case-client">Self-Initiated · March 2026 · SaaS / Product BA</div>
               <div class="case-title">Spotify: Podcast Discovery Enhancement</div>
             </div>
             <div class="case-expand-badge">Full Case Study ↗</div>
@@ -928,6 +1045,143 @@
           <div class="secondary-kpi"><span>Recommendation Relevance Score</span><span class="kpi-target">≥3.8/5.0</span></div>
           <div class="secondary-kpi"><span>Opt-Out Rate</span><span class="kpi-target">≤5%</span></div>
           <div class="secondary-kpi"><span>Podcast Save Rate (post-recommendation)</span><span class="kpi-target">≥20% of trialists</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── F1 MODAL ── -->
+<div id="f1-modal" class="modal-overlay" onclick="closeF1Modal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow" style="color:#e10600;">Self-Initiated · March 2026 · Sports / Product BA</div>
+        <h3 class="modal-title">Formula 1: Fan Engagement Initiative</h3>
+        <div class="modal-disclaimer">Scenario-based. All requirements, stakeholders, and metrics are illustrative, drawn from publicly available F1 fan research and commercial information.</div>
+      </div>
+      <button class="modal-close" onclick="closeF1Modal(null, true)">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Executive Summary -->
+      <div class="modal-section">
+        <div class="modal-section-title">Executive Summary</div>
+        <p>F1's viewership crossed 1.5 billion in 2023, largely driven by Drive to Survive. But the majority of those new viewers are stuck in a low-engagement state — they watch races, follow a driver on Instagram, and drift. Nielsen Sports research describes a large segment who call themselves fans but watch fewer than four races a year, never buy anything F1-related, and don't engage between weekends. This project — the Fan Engagement Initiative (FEI) — scopes what F1 would need to build to close that gap, approached end-to-end as a BA: problem definition, stakeholder mapping, As-Is/To-Be process analysis, functional requirements, MoSCoW prioritisation, and KPI definition. It's digital-first, targeting casual viewers in the US and India and younger audiences globally.</p>
+      </div>
+
+      <!-- Business Objectives -->
+      <div class="modal-section">
+        <div class="modal-section-title">Business Objectives</div>
+        <div class="modal-kpi-row">
+          <div class="modal-kpi"><span class="modal-kpi-value" style="color:#e10600;">+40%</span><span class="modal-kpi-label">Avg. monthly active sessions per casual fan (9 months)</span></div>
+          <div class="modal-kpi"><span class="modal-kpi-value" style="color:#e10600;">+25%</span><span class="modal-kpi-label">Casual-to-engaged fan conversion (US + India, first year)</span></div>
+          <div class="modal-kpi"><span class="modal-kpi-value" style="color:#e10600;">+15%</span><span class="modal-kpi-label">In-app merchandise click-through rate (commercial intent proxy)</span></div>
+        </div>
+      </div>
+
+      <!-- Stakeholder Register -->
+      <div class="modal-section">
+        <div class="modal-section-title">Stakeholder Register</div>
+        <div class="modal-table-wrap">
+          <table class="modal-table">
+            <thead><tr><th>Stakeholder</th><th>Function</th><th>Influence</th><th>Interest</th><th>Engagement Approach</th></tr></thead>
+            <tbody>
+              <tr><td>Chief Digital Officer</td><td>Digital / Product</td><td><span class="pill pill-high">High</span></td><td><span class="pill pill-high">High</span></td><td>Bi-weekly steering; escalate blockers</td></tr>
+              <tr><td>Product Manager, Fan Experience</td><td>Product</td><td><span class="pill pill-high">High</span></td><td><span class="pill pill-high">High</span></td><td>Daily collaboration; requirement sign-off</td></tr>
+              <tr><td>Head of Commercial Partnerships</td><td>Commercial</td><td><span class="pill pill-high">High</span></td><td><span class="pill pill-med">Medium</span></td><td>Monthly reviews; flag features affecting sponsor placement</td></tr>
+              <tr><td>Data & Analytics Team</td><td>Analytics</td><td><span class="pill pill-med">Medium</span></td><td><span class="pill pill-high">High</span></td><td>Sprint reviews; data access agreements signed early</td></tr>
+              <tr><td>Content & Editorial</td><td>Media</td><td><span class="pill pill-med">Medium</span></td><td><span class="pill pill-high">High</span></td><td>Workshop at kick-off; review content taxonomy decisions</td></tr>
+              <tr><td>Broadcast Partners (Sky, ESPN)</td><td>External</td><td><span class="pill pill-med">Medium</span></td><td><span class="pill pill-med">Medium</span></td><td>Inform on feature scope; contractual review if needed</td></tr>
+              <tr><td>Legal & Data Privacy</td><td>Legal</td><td><span class="pill pill-med">Medium</span></td><td><span class="pill pill-low">Low</span></td><td>Compliance checkpoint at 6-week and pre-launch milestones</td></tr>
+              <tr><td>Casual Fans (target users)</td><td>External</td><td><span class="pill pill-low">Low</span></td><td><span class="pill pill-high">High</span></td><td>User research panel, beta cohort, post-launch feedback</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Process Analysis -->
+      <div class="modal-section">
+        <div class="modal-section-title">Process Analysis: As-Is → To-Be</div>
+        <div class="modal-process-grid">
+          <div>
+            <div class="modal-process-header asis">As-Is: Current Casual Fan Journey</div>
+            <div class="modal-process-steps">
+              <div class="modal-pstep"><span class="pstep-num">1</span><div><strong>Watches a race</strong> — via TV/streaming after social media exposure. No follow-up prompt.</div></div>
+              <div class="modal-pstep"><span class="pstep-num">2</span><div><strong>Downloads F1 app</strong> — Generic homepage, no onboarding, no 'start here' for new fans.</div></div>
+              <div class="modal-pstep"><span class="pstep-num">3</span><div><strong>Browses briefly</strong> — Content assumes prior knowledge of DRS, tyre compounds, constructors' championship.</div></div>
+              <div class="modal-pstep"><span class="pstep-num">4</span><div><strong>Returns next race weekend</strong> — No continuity from last visit; same generic experience.</div></div>
+              <div class="modal-pstep"><span class="pstep-num">5</span><div><strong>Engagement drifts</strong> — Nothing between events; cold start every time; races in bad time zones accelerate drop-off.</div></div>
+            </div>
+          </div>
+          <div>
+            <div class="modal-process-header tobe">To-Be: Proposed Engaged Fan Journey</div>
+            <div class="modal-process-steps">
+              <div class="modal-pstep"><span class="pstep-num green">1</span><div><strong>Onboarding quiz</strong> — Favourite driver, team, content format, home market. Personalised from first session.</div></div>
+              <div class="modal-pstep"><span class="pstep-num green">2</span><div><strong>Personalised home feed</strong> — Relevant driver news, explainer videos, highlights. No prior knowledge required.</div></div>
+              <div class="modal-pstep"><span class="pstep-num green">3</span><div><strong>Mid-week notification</strong> — 'Norris's top 10 overtakes — 4 min watch'. A reason to open the app on a Tuesday.</div></div>
+              <div class="modal-pstep"><span class="pstep-num green">4</span><div><strong>Fan Predictor game</strong> — Opens Wednesday before each race. Prediction creates a stake in the outcome.</div></div>
+              <div class="modal-pstep"><span class="pstep-num green">5</span><div><strong>Post-race personalised recap</strong> — Within 90 minutes of chequered flag, covering followed drivers and teams.</div></div>
+              <div class="modal-pstep"><span class="pstep-num green">6</span><div><strong>Commercial integration</strong> — After 4-6 engaged races, merchandise and early ticket access surfaced at peak intent.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Functional Requirements -->
+      <div class="modal-section">
+        <div class="modal-section-title">Functional Requirements & MoSCoW Prioritisation</div>
+        <div class="modal-table-wrap">
+          <table class="modal-table">
+            <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Owner</th></tr></thead>
+            <tbody>
+              <tr><td>FR-01</td><td>Fan onboarding flow (≤5 screens): captures favourite driver, team, content type, and home market. Skippable at any point. Completion rate ≥70% in user testing.</td><td><span class="pill pill-must">Must Have</span></td><td>PM / UX</td></tr>
+              <tr><td>FR-02</td><td>Home feed personalised to stated preferences within 24 hours of onboarding. Default fallback content for users who skip. Personalised feed visible by next app open.</td><td><span class="pill pill-must">Must Have</span></td><td>Data & Analytics</td></tr>
+              <tr><td>FR-07</td><td>All user data for personalisation compliant with GDPR (EU), CCPA (California), PDPB (India). Users can reset preference profile at any time from Settings.</td><td><span class="pill pill-must">Must Have</span></td><td>Legal</td></tr>
+              <tr><td>FR-05</td><td>Push notifications capped at 3 per week for opted-in users. Content personalised to followed drivers and teams. Opt-out rate &lt;8% in first 60 days.</td><td><span class="pill pill-should">Should Have</span></td><td>PM / Legal</td></tr>
+              <tr><td>FR-08</td><td>Personalised post-race summary (push + in-app card) within 90 minutes of chequered flag for ≥95% of users. Covering results for followed drivers and teams.</td><td><span class="pill pill-should">Should Have</span></td><td>PM / Content</td></tr>
+              <tr><td>FR-03</td><td>'F1 Explained' short-form content series: 20+ topics for new fans, 2-4 min videos and 400-word articles. Completion rate ≥55% in first 30 days.</td><td><span class="pill pill-should">Should Have</span></td><td>Content & Editorial</td></tr>
+              <tr><td>FR-04</td><td>Fan Predictor game open from Wednesday before each race. Predict race winner, fastest lap, first retirement. Leaderboard updated within 30 minutes of race end.</td><td><span class="pill pill-could">Could Have</span></td><td>PM</td></tr>
+              <tr><td>FR-06</td><td>Users active on 3+ non-race days in rolling 30-day window flagged as 'engaged' and eligible for commercial features: merchandise recommendations and early ticket access.</td><td><span class="pill pill-could">Could Have</span></td><td>Data & Commercial</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="modal-section">
+        <div class="modal-section-title">Success Metrics & KPIs</div>
+        <div class="modal-kpi-row" style="margin-bottom:1rem;">
+          <div class="modal-kpi"><span class="modal-kpi-value" style="font-size:1.3rem;">≥4.5</span><span class="modal-kpi-label">Avg. monthly sessions/casual fan (from ~3.2 baseline)</span></div>
+          <div class="modal-kpi"><span class="modal-kpi-value" style="font-size:1.3rem;">≥20%</span><span class="modal-kpi-label">Registered users active on 3+ non-race days/month (from ~12%)</span></div>
+          <div class="modal-kpi"><span class="modal-kpi-value" style="font-size:1.3rem;">≥22.5%</span><span class="modal-kpi-label">Casual-to-engaged conversion rate (from ~18% baseline)</span></div>
+        </div>
+        <div class="modal-secondary-kpis">
+          <div class="secondary-kpi"><span>Onboarding Completion Rate</span><span class="kpi-target">≥65%</span></div>
+          <div class="secondary-kpi"><span>Push Notification Opt-Out Rate (60 days)</span><span class="kpi-target">≤8%</span></div>
+          <div class="secondary-kpi"><span>F1 Explained Content Completion Rate</span><span class="kpi-target">≥55%</span></div>
+          <div class="secondary-kpi"><span>Fan Predictor Participation Rate</span><span class="kpi-target">≥30% of eligible users</span></div>
+          <div class="secondary-kpi"><span>Post-Race Summary Open Rate (within 2 hrs)</span><span class="kpi-target">≥35%</span></div>
+          <div class="secondary-kpi"><span>In-App Merchandise CTR</span><span class="kpi-target">≥3.6% (+15%)</span></div>
+        </div>
+      </div>
+
+      <!-- Risk Register -->
+      <div class="modal-section">
+        <div class="modal-section-title">Risk Register</div>
+        <div class="modal-table-wrap">
+          <table class="modal-table">
+            <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead>
+            <tbody>
+              <tr><td>Onboarding quiz reduces registration conversion — users abandon before completing sign-up</td><td><span class="pill pill-med">Medium</span></td><td><span class="pill pill-high">High</span></td><td>Make quiz skippable from step 1; A/B test skippable vs. mandatory; monitor drop-off by step in first 2 weeks</td></tr>
+              <tr><td>Personalised feed surfaces low-quality content early, damaging first impressions</td><td><span class="pill pill-med">Medium</span></td><td><span class="pill pill-high">High</span></td><td>Manual curation layer on top of preference matching for first 4 weeks; editorial review of content pool</td></tr>
+              <tr><td>Push notification fatigue — users opt out faster than expected</td><td><span class="pill pill-high">High</span></td><td><span class="pill pill-med">Medium</span></td><td>Enforce 3-per-week cap at system level from day one; reduce to 2/week if opt-out exceeds 6% in first 30 days</td></tr>
+              <tr><td>Broadcast rights restrictions prevent race highlights in post-race summaries (FR-08)</td><td><span class="pill pill-med">Medium</span></td><td><span class="pill pill-med">Medium</span></td><td>Confirm rights position with Legal before FR-08 enters development; design summary to work text/data-only if video restricted</td></tr>
+              <tr><td>India PDPB compliance extends Legal review, delaying launch in that market</td><td><span class="pill pill-med">Medium</span></td><td><span class="pill pill-med">Medium</span></td><td>Engage PDPB counsel at kick-off; consider phased launch with India added 4-6 weeks after EU/US</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -1101,7 +1355,7 @@
               <div class="contact-link-value">+91 98191 06462</div>
             </div>
           </a>
-          <a class="contact-link" href="https://www.linkedin.com/in/adityachaudhari00/" target="_blank">
+          <a class="contact-link" href="https://www.linkedin.com/in/adityachaudhari00/" target="_blank" rel="noopener noreferrer">
             <div class="contact-link-icon" style="background: #f0f6ff;">🔗</div>
             <div class="contact-link-text">
               <div class="contact-link-label">LinkedIn</div>
@@ -1123,8 +1377,20 @@
             <li>MSc International Business — Birmingham</li>
             <li>ECBA certification in progress</li>
           </ul>
-          <a href="https://docs.google.com/document/d/1UZMiYYxNeSaqce3C284-J_3pstmvLHk4/export?format=pdf" target="_blank" class="btn-resume">
+          <a href="https://docs.google.com/document/d/1UZMiYYxNeSaqce3C284-J_3pstmvLHk4/export?format=pdf" target="_blank" rel="noopener noreferrer" class="btn-resume">
             ↓ Download Resume PDF
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Aditya Chaudhari</span> · Business Analyst · Mumbai, India · <span>2025</span>
+</footer>
+
 <script>
   function openModal() {
     document.getElementById('spotify-modal').classList.add('open');
@@ -1136,5 +1402,31 @@
       document.body.style.overflow = '';
     }
   }
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(null, true); });
+  function openF1Modal() {
+    document.getElementById('f1-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeF1Modal(e, force) {
+    if (force || (e && e.target === document.getElementById('f1-modal'))) {
+      document.getElementById('f1-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModal(null, true); closeF1Modal(null, true); closeMobileMenu(); } });
+
+  // Hamburger
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', function() {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 </script>
+</body>
+</html>
